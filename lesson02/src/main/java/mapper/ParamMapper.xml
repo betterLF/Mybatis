@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace绑定一个对应的Dao/Mapper接口-->
+<mapper namespace="dao.ParamMapper">
+<!--    void insertEmp(Employee employee)-->
+<!--    #{}:PreparedStatement(通配符操作sql语句，自动加单引号)
+         ${}: statement(需要加单引号,必须使用字符串拼接的方式操作sql语句)
+         (见JDBCTest)
+         建议使用#{},在特殊情况下需要使用${}，如模糊查询和批量删除-->
+
+<!--  useGeneratedKeys:可以使用自动生成的主键
+    keyProperty:将自动生成的主键赋值给传递过来的参数的哪一个属性-->
+<!--void insertEmp(Employee employee)-->
+    <insert id="insertEmp" useGeneratedKeys="true" keyProperty="eid" >
+<!--insert into mybatis.employee values(null,#{ename},#{age},#{sex})-->
+       insert into mybatis.employee values(null,'${ename}',${age},'${sex}')
+  </insert>
+<!--    Employee getEmpByEid(String eid)-->
+<!--
+   不同的参数类型:${}和#{}的不同取值方式:
+   1:当传输参数为单个String或基本数据类型和其包装类时
+       #{}:可以以任意的名字获取参数值(只要顺序对，比如#{eids}也可以)
+       ${}:只能以${value}或${_parameter}获取
+   2:当传输参数为JavaBean时
+    #{}和${}都可以通过属性名直接获取属性值,但是要注意${}的单引号问题
+   3:当传输多个参数时，mybatis会默认将这些参数放在map集合中
+   两种方式:
+   (1):键为arg0,arg1,arg2,arg3,arg4,arg5..以参数为值(#{})
+   (2):键为param1,param2,param3..以参数为值(#{},${},但是要注意#{}的单引号问题)
+   4:当传输Map参数时
+   #{}和${}都可以通过键的名字直接获取值，但是要注意${}的单引号问题
+   5:命名参数
+   可以通过@Param(”key“为map集合指定键的名字)
+   6:当传输参数为List或Array数组时，mybatis会将List或Array放在map中
+   List为list为键，Array以array为键
+-->
+    <select id="getEmpByEid"  resultType="pojo.Employee">
+    select eid,ename,age,sex from mybatis.employee where eid = #{eid}
+  </select>
+<!--Employee getEmpByEidAndEname(String eid,String ename)-->
+    <select id="getEmpByEidAndEname"  resultType="pojo.Employee">
+    select eid,ename,age,sex from mybatis.employee where eid = #{arg0} and ename= #{arg1}
+  </select>
+<!--Employee getEmpByMap(Map<String,Object> emp)-->
+    <select id="getEmpByMap"  resultType="pojo.Employee">
+    select eid,ename,age,sex from mybatis.employee where eid = ${eid} and ename= '${ename}'
+  </select>
+<!--Employee getEmpByEidAndEnameByParam(@Param("eid")String id,@Param("ename")String ename)-->
+    <select id="getEmpByEidAndEnameByParam"  resultType="pojo.Employee">
+    select eid,ename,age,sex from mybatis.employee where eid = #{eid} and ename= #{ename}
+  </select>
+</mapper>

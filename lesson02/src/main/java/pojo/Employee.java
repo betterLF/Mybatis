@@ -9,15 +9,16 @@ public class Employee {
     private String  ename;
     private Integer age;
     private String sex;
-
+    private Department department;
     public Employee() {
     }
 
-    public Employee(Integer eid, String ename, Integer age, String sex) {
+    public Employee(Integer eid, String ename, Integer age, String sex, Department department) {
         this.eid = eid;
         this.ename = ename;
         this.age = age;
         this.sex = sex;
+        this.department = department;
     }
 
     public Integer getEid() {
@@ -52,6 +53,14 @@ public class Employee {
         this.sex = sex;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -59,6 +68,7 @@ public class Employee {
                 ", ename='" + ename + '\'' +
                 ", age=" + age +
                 ", sex='" + sex + '\'' +
+                ", department=" + department +
                 '}';
     }
 }
