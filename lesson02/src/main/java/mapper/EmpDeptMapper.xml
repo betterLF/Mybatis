@@ -24,9 +24,60 @@
             <result column="dname" property="dname"></result>
         </association>
     </resultMap>
-    <!--        List<Employee> getAllEmp()-->
+<!--            List<Employee> getAllEmp()-->
     <select id="getAllEmp"  resultMap="EmpMap">
         select  * from mybatis.employee e left join mybatis.department d on e.did=d.did
     </select>
+<!--先查询每个员工的信息再根据did查出部门-->
+<!--  <resultMap id="EmpMap" type="pojo.Employee">   -->
+    <resultMap id="EmpMapStep" type="pojo.Employee">
+        <id column="eid" property="eid"></id>
+        <result column="ename" property="ename"></result>
+        <result column="age" property="age"></result>
+        <result column="sex" property="sex"></result>
+<!--
+select:分步查询的sql的id，即接口的全限定名，方法名或namespace.sql的id
+column:分步查询的条件，注意:此条件必须是从数据库查询过的-->
+        <association property="department" javaType="pojo.Department" select="dao.DepaMapper.getDepartmentByDid" column="did">
+        </association>
+    </resultMap>
+<!--    Employee getEmpStep(Integer eid)-->
+    <select id="getEmpStep"  resultMap="EmpMapStep">
+        select eid,ename,age,sex,did from mybatis.employee where eid = #{eid}
+    </select>
+<!--Department getDeptEmpsByDid(Integer did)-->
+    <resultMap id="deptMap" type="pojo.Department">
+        <id column="did" property="did"></id>
+        <result column="dname" property="dname"></result>
+<!--<collection>处理一对多和多对多的关系
+ofType:指集合中的类型，不需要指定javaType-->
+       <collection property="employeeList" ofType="pojo.Employee">
+           <id column="eid" property="eid"></id>
+           <result column="ename" property="ename"></result>
+           <result column="age" property="age"></result>
+           <result column="sex" property="sex"></result>
+       </collection>
+    </resultMap>
 
+    <select id="getDeptEmpsByDid"  resultMap="deptMap">
+        select d.did,d.dname,e.eid,e.ename,e.age,e.sex from mybatis.department d left join mybatis.employee e on d.did =e.did where d.did= #{did}
+    </select>
+<!--Department getOnlyDeptEByDid(Integer did)-->
+
+    <resultMap id="deptMapStep" type="pojo.Department">
+        <id column="did" property="did"></id>
+        <result column="dname" property="dname"></result>
+        <!--<collection>处理一对多和多对多的关系
+        ofType:指集合中的类型，不需要指定javaType
+        fetchType:lazy表示延迟加载 eager表示不延迟加载-->
+        <collection property="employeeList" select="dao.EmpDeptMapper.getEmpListByDid" column="did" fetchType="lazy" >
+        </collection>
+    </resultMap>
+    <select id="getOnlyDeptEByDid" resultMap="deptMapStep">
+        select did,dname from mybatis.department where did=#{did}
+    </select>
+<!--    List<Employee> getEmpListByDid(Integer did)-->
+    <select id="getEmpListByDid" resultType="pojo.Employee">
+        select eid,ename,age,sex from mybatis.employee where did=#{did}
+    </select>
 </mapper>

@@ -14,8 +14,12 @@
      url:在网络路径或者磁盘路径下访问资源文件-->
     <properties resource="jdbc.properties"></properties>
     <settings>
-<!--    <setting name="mapUnderscoreToCamelCase" value="true"></setting>  将名字改成驼峰命名法 -->
+<!--    <setting name="mapUnderscoreToCamelCase" value="true"></setting>  将名字改成驼峰命名法,user_name映射为userName -->
         <setting name="mapUnderscoreToCamelCase" value="true"></setting>
+<!-- <setting name="lazyLoadingEnabled" value="true"></setting>:开启延时加载-->
+        <setting name="lazyLoadingEnabled" value="true"></setting>
+<!--     <setting name="aggressiveLazyLoading" value="false"></setting>>是否查询所有数据 -->
+        <setting name="aggressiveLazyLoading" value="false"></setting>
     </settings>
 
 <!--    -->
@@ -56,5 +60,6 @@
         <mapper resource="Mapper/EmpMapper.xml"/>
         <mapper resource="Mapper/ParamMapper.xml"/>
         <mapper resource="Mapper/EmpDeptMapper.xml"/>
+        <mapper resource="Mapper/DepaMapper.xml"/>
     </mappers>
 </configuration>
