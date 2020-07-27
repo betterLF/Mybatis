@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace绑定一个对应的Dao/Mapper接口-->
+<mapper namespace="dao.EmpDao">
+    
+<!--
+ <sql id=""></sql>:设置一段sql片段，即公共sql，可以被当前映射文件中sql语句所访问
+  <include refid="empColumns"></include>:访问某个sql片段
+  -->
+    <sql id="empColumns"> select eid,ename,age,sex from mybatis.employee</sql>
+<!--List<Employee> getEmpListByMore():多条件查询:若页面中没有设置此条件，SQL语句中一定不能有该条件-->
+<!--
+<if test=""></if>:通过test表达式,拼接sql语句
+<where></where>:添加while关键字，同时去掉多余的and
+ <trim prefix="" suffix="" prefixOverrides="" suffixOverrides="">:截取并拼接
+ prefix:在操作的sql语句前加入某些内容
+ suffix:在操作的sql语句后加入某些内容
+ prefixOverrides:把操作的sql语句前的某些内容去掉
+ suffixOverrides:把操作的sql语句后的某些内容去掉 (内容用|分割，表示或)
+ <set></set>:主要是用于解决修改操作中sql语句中可能多出逗号的问题(但可以用trim代替，所以用的不多)
+ <choose></choose>:主要是用于分支判断，类似于java中的switch case，只会满足所有分支中的一个
+  <choose>
+  <when test=""></when>:通过test表达式来拼接sql
+  <when test=""></when>
+  ...
+  ...
+  <otherwise></otherwise>:当when都不符合条件，就会选择otherwise拼接sql语句
+  </choose>
+  <foreach collection="" item="" close="" open="" separator="" index=""></foreach>
+  :对一个数组或集合进行遍历
+  collection:来指定要遍历的集合或数组
+  item:设置别名
+  close:设置循环体的结束内容
+  open:设置循环体的开始内容
+  separator:设置每一次循环的分割符
+  index:若遍历list集合，index代表下标，若遍历map集合，index代表键
+-->
+    <select id="getEmpListByMore"  resultType="pojo.Employee">
+    select eid,ename,age,sex,did from mybatis.employee
+   <!--加上一个恒成立的条件用于排除and和where可能出现的多余问题-->
+<!--    where 1-->
+<!--    <if test="eid!=null">-->
+<!--      and  eid = #{eid}-->
+<!--    </if>-->
+
+<!--    <if test="ename!=null and ename!=''">-->
+<!--        and ename=#{ename}-->
+<!--    </if>-->
+
+<!--    <if test="eid!=null">-->
+<!--        and age=#{age}-->
+<!--    </if>-->
+
+<!--    <if test="sex!=null and sex!=''">-->
+<!--        and sex=#{sex}-->
+<!--    </if>-->
+
+<!--        <where>-->
+<!--        <if test="eid!=null">-->
+<!--            and  eid = #{eid}-->
+<!--        </if>-->
+
+<!--        <if test="ename!=null and ename!=''">-->
+<!--            and ename=#{ename}-->
+<!--        </if>-->
+
+<!--        <if test="eid!=null">-->
+<!--            and age=#{age}-->
+<!--        </if>-->
+
+<!--        <if test="sex!=null and sex!=''">-->
+<!--            and sex=#{sex}-->
+<!--        </if>-->
+<!--        </where>-->
+
+        <trim prefix="where" suffixOverrides="and|or">
+            <if test="eid!=null">
+                 eid = #{eid} and
+            </if>
+
+            <if test="ename!=null and ename!=''">
+                 ename=#{ename} and
+            </if>
+
+            <if test="eid!=null">
+                 age=#{age}    and
+            </if>
+
+            <if test="sex!=null and sex!=''">
+                 sex=#{sex}
+            </if>
+        </trim>
+  </select>
+
+<!--    List<Employee> getEmpListByChoose(Employee employee)-->
+    <select id="getEmpListByChoose" resultType="pojo.Employee">
+        <!--select eid,ename,age,sex from mybatis.employee-->
+        <include refid="empColumns"></include>
+        <where>
+            <choose>
+                <when test="eid!=null">
+                    eid=#{eid}
+                </when>
+                <when test="ename!=null and ename!=''">
+                    ename=#{ename}
+                </when>
+                 <when test="age!=null">
+                     age=#{age}
+                 </when>
+                 <otherwise>
+                     sex=#{sex}
+                 </otherwise>
+            </choose>
+        </where>
+    </select>
+
+<!--void insertEmp(Employee employee)-->
+    <insert id="insertEmp">
+        insert into mybatis.employee values(
+        null,
+        #{ename},
+        #{age},
+        <choose>
+            <when test="sex==0">'女'</when>
+            <when test="sex==1">'男'</when>
+            <otherwise>'不详'</otherwise>
+        </choose>
+        ,1
+        )
+    </insert>
+
+<!--void deleteMoreEmp(String eids)-->
+    <delete id="deleteMoreEmp">
+        delete from mybatis.employee where eid in (${value})
+    </delete>
+
+<!--void deleteMoreByList(List<Integer> eids)-->
+    <delete id="deleteMoreByList">
+          delete from mybatis.employee where eid in
+          <foreach collection="list" item="eid" separator="," open="(" close=")">
+              #{eid}
+          </foreach>
+          )
+    </delete>
+<!--void insertMoreByArray(Employee[] employees)-->
+    <insert id="insertMoreByArray">
+        insert into mybatis.employee values
+        <foreach collection="emps" item="emp" separator=",">
+            (
+            null,#{emp.ename},#{emp.age},#{emp.sex},1
+            )
+        </foreach>
+    </insert>
+<!-- void updateMoreByArray(@Param("emps") Employee[] employees)-->
+    <update id="updateMoreByArray">
+        <foreach collection="emps" item="emp">
+            update mybatis.employee  set ename=#{emp.ename},age=#{emp.age},sex=#{emp.sex} where eid=#{emp.eid};
+        </foreach>
+    </update>
+<!--
+批量操作
+delete:
+       delete from emp where eid in ();
+       delete from emp where eid =1 or eid =2 or eid =3
+select:
+       select * from emp where eid in ();
+       select * from emp where eid =1 or eid =2 or eid =3
+update:
+       把每条数据修改为相同内容
+       update emp set...where eid in ();
+       update emp set...where eid =1 or eid =2 or eid =3
+       把每条数据修改成相对应内容,注意必须在链接地址(jdbc.properties中添加参数?allowMultiQueries=true)
+       update emp set...where eid =1;
+       update emp set...where eid =2;
+       update emp set...where eid =3
+insert:
+      insert into emp values(),(),()
+-->
+</mapper>
