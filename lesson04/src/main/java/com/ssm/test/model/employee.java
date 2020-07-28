@@ -1,26 +1,26 @@
-package pojo;
+package com.ssm.test.model;
 
-import java.io.Serializable;
-
-/**
- * @author lifei
- * @date 2020/7/23 15:23
- */
-public class Employee implements Serializable {
+public class employee {
     private Integer eid;
-    private String  ename;
-    private Integer age;
-    private String sex;
-    private Department department;
-    public Employee() {
-    }
 
-    public Employee(Integer eid, String ename, Integer age, String sex, Department department) {
+    private String ename;
+
+    private Integer age;
+
+    private String sex;
+
+    private Integer did;
+
+    public employee(Integer eid, String ename, Integer age, String sex, Integer did) {
         this.eid = eid;
         this.ename = ename;
         this.age = age;
         this.sex = sex;
-        this.department = department;
+        this.did = did;
+    }
+
+    public employee() {
+        super();
     }
 
     public Integer getEid() {
@@ -36,7 +36,7 @@ public class Employee implements Serializable {
     }
 
     public void setEname(String ename) {
-        this.ename = ename;
+        this.ename = ename == null ? null : ename.trim();
     }
 
     public Integer getAge() {
@@ -52,25 +52,25 @@ public class Employee implements Serializable {
     }
 
     public void setSex(String sex) {
-        this.sex = sex;
+        this.sex = sex == null ? null : sex.trim();
     }
 
-    public Department getDepartment() {
-        return department;
+    public Integer getDid() {
+        return did;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDid(Integer did) {
+        this.did = did;
     }
 
     @Override
     public String toString() {
-        return "Employee{" +
+        return "employee{" +
                 "eid=" + eid +
                 ", ename='" + ename + '\'' +
                 ", age=" + age +
                 ", sex='" + sex + '\'' +
-                ", department=" + department +
+                ", did=" + did +
                 '}';
     }
 }

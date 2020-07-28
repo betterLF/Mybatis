@@ -20,4 +20,6 @@ public interface EmpDao {
     void insertMoreByArray(@Param("emps") Employee[] employees);
     //批量修改
     void updateMoreByArray(@Param("emps") Employee[] employees);
+    //根据eid查询员工信息
+    Employee getEmpByEid(Integer eid);
 }
