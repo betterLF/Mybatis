@@ -4,12 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--namespace绑定一个对应的Dao/Mapper接口-->
 <mapper namespace="dao.EmpDao">
-    
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
 <!--
  <sql id=""></sql>:设置一段sql片段，即公共sql，可以被当前映射文件中sql语句所访问
   <include refid="empColumns"></include>:访问某个sql片段
   -->
     <sql id="empColumns"> select eid,ename,age,sex from mybatis.employee</sql>
+
+<!--Employee getEmpByEid(Integer eid)-->
+    <select id="getEmpByEid" resultType="pojo.Employee">
+        <include refid="empColumns"></include> where eid=#{eid}
+    </select>
 <!--List<Employee> getEmpListByMore():多条件查询:若页面中没有设置此条件，SQL语句中一定不能有该条件-->
 <!--
 <if test=""></if>:通过test表达式,拼接sql语句

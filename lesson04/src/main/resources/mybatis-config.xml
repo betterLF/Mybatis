@@ -59,7 +59,6 @@
     <mappers>
 <!--        <mapper resource="dao/EmpMapper.xml"/>-->
 <!--此种写法要求mapper接口和mapper映射文件必须在同一个包下-->
-        <mapper resource="Mapper/EmpMapper.xml"/>
-
+        <mapper resource="com\ssm\test\mapper\employeeMapper.xml"/>
     </mappers>
 </configuration>

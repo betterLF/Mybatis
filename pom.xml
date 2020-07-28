@@ -11,6 +11,8 @@
   <modules>
     <module>lesson01</module>
       <module>lesson02</module>
+      <module>lesson03</module>
+    <module>lesson04</module>
   </modules>
 
   <name>MybatisDemo</name>
@@ -34,6 +36,7 @@
       <artifactId>mybatis</artifactId>
       <version>3.5.2</version>
     </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -84,6 +87,17 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.mybatis.generator</groupId>
+          <artifactId>mybatis-generator-maven-plugin</artifactId>
+          <version>1.3.2</version>
+          <configuration>
+            <verbose>true</verbose>
+            <overwrite>true</overwrite>
+          </configuration>
+        </plugin>
+
       </plugins>
     </pluginManagement>
 
